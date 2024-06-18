@@ -1,0 +1,99 @@
+
+# Natural Language Processing (Bag Of Words)
+
+## Developer Information
+- **Name:** Yuvraj Singh Chowdhary
+- **LinkedIn:** [Yuvraj Singh Chowdhary](https://www.linkedin.com/in/yuvraj-singh-chowdhary/)
+- **GitHub:** [chowdhary19](https://github.com/chowdhary19)
+
+## Project Overview
+This project involves performing sentiment analysis on restaurant reviews using Natural Language Processing (NLP) techniques. The data is in TSV (Tab-Separated Values) format and the steps include data cleaning, creating a Bag of Words model, and training a Naive Bayes classifier.
+
+### Steps Involved:
+
+1. **Importing Libraries:**
+   - `numpy`, `pandas`, `matplotlib.pyplot`
+
+2. **Importing Dataset:**
+   - Read the dataset using `pd.read_csv` with `delimiter='\t'` and `quoting=3`.
+
+3. **Cleaning Text:**
+   - Remove non-letter characters using `re.sub`.
+   - Convert text to lowercase.
+   - Tokenize the text (split into words).
+   - Remove stopwords using `nltk.corpus.stopwords`.
+   - Perform stemming using `nltk.stem.PorterStemmer`.
+   - Reconstruct the cleaned text.
+
+4. **Creating the Bag of Words Model:**
+   - Use `CountVectorizer` to convert the cleaned text (corpus) into a matrix of token counts with `max_features=1500`.
+
+5. **Splitting the Dataset:**
+   - Split the data into training and testing sets using `train_test_split` from `sklearn.model_selection`.
+
+6. **Training the Naive Bayes Model:**
+   - Use `GaussianNB` from `sklearn.naive_bayes` to train the model.
+
+7. **Predicting the Test Set:**
+   - Predict sentiments for the test set and print the predictions alongside actual values.
+
+8. **Making the Confusion Matrix:**
+   - Use `confusion_matrix` and `accuracy_score` from `sklearn.metrics` to evaluate the model.
+
+### Key Concepts:
+- **NLP (Natural Language Processing):** A field of artificial intelligence focused on the interaction between computers and humans through natural language.
+- **Bag of Words Model:** A technique to convert text into numerical data by counting the occurrences of each word.
+- **Stemming:** The process of reducing words to their base or root form.
+- **Stopwords:** Commonly used words (like "the", "is", "in") that are often removed in text processing.
+- **Naive Bayes Classifier:** A simple probabilistic classifier based on Bayes' theorem with strong (naive) independence assumptions between features.
+
+### Example Code Snippet:
+```python
+# Cleaning Text
+import re
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
+
+corpus = []
+for i in range(0, 1000):
+  review = re.sub('[^a-zA-Z]', ' ', dataset['Review'][i])
+  review = review.lower()
+  review = review.split()
+  ps = PorterStemmer()
+  all_stopwords = stopwords.words('english')
+  all_stopwords.remove('not')
+  review = [ps.stem(word) for word in review if not word in set(all_stopwords)]
+  review = ' '.join(review)
+  corpus.append(review)
+
+# Creating Bag of Words Model
+from sklearn.feature_extraction.text import CountVectorizer
+cv = CountVectorizer(max_features = 1500)
+X = cv.fit_transform(corpus).toarray()
+y = dataset.iloc[:, -1].values
+
+# Splitting Dataset
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 0)
+
+# Training Naive Bayes Model
+from sklearn.naive_bayes import GaussianNB
+classifier = GaussianNB()
+classifier.fit(X_train, y_train)
+
+# Predicting Test Set
+y_pred = classifier.predict(X_test)
+print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+
+# Making Confusion Matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm = confusion_matrix(y_test, y_pred)
+print(cm)
+accuracy_score(y_test, y_pred)
+```
+
+## Documentation Links
+- [NLTK Documentation](https://www.nltk.org/)
+- [scikit-learn Documentation](https://scikit-learn.org/stable/documentation.html)
